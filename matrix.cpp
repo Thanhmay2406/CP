@@ -1,35 +1,44 @@
-#include <bits/stdc++.h>
+#include "bits/stdc++.h"
 
 using namespace std;
 
-#define int long long
-
-/*
- * matrix template using int64 (long long)
- * but i using #define int long long for this :)))
- * */
-
-const int MOD = 1e9 + 7;
-
 struct matrix {
-  int n, m;
-  vector<vector<int>> arr;
+  int n, m, mod;
+  vector<vector<long long>> arr;
   
-  matrix(const int& _n, const int& _m): n(_n), m(_m) {
-    arr.assign(n, vector<int>(m, 0));
+  matrix(const int &n, const int &m, const int &mod): n(n), m(m), mod(mod) {
+    arr.assign(n + 1, vector<long long>(m + 1, 0LL));
   }
 
-  matrix operator* (const matrix& other) {
-    matrix ans(n, other.m);
-    
-    for (int i=0 ; i<n ; i++) {
-      for (int j=0 ; j<other.m ; j++) {
-        for (int k=0 ; k<m ; k++) {
-          ans.arr[i][j] = (ans.arr[i][j] + arr[i][k] % MOD * other.arr[k][j] % MOD) % MOD;
+  matrix (const int &n, const int &m) {
+    arr.assign(n + 1, vector<long long>(m + 1, 1LL));
+  }
+
+  matrix operator* (const matrix &other) {
+    matrix ans(n, other.m, mod);
+
+    for (int i = 1; i <= n; i++) {
+      for (int j = 1; j <= other.m; j++) {
+        for (int k = 1; k <= m; k++) {
+          ans.arr[i][j] = ( ans.arr[i][j] + (arr[i][k] % mod * other.arr[k][j] % mod) % mod ) % mod;
         }
       }
     }
 
+    return ans;
+  }
+
+  matrix binpow(matrix a, int b) {
+    matrix ans(a.n, a.m);
+
+    while(b) {
+      if (b & 1) {
+        ans = ans * a;
+      }
+      a = a * a;
+      b /= 2;
+    }
+    
     return ans;
   }
 };
